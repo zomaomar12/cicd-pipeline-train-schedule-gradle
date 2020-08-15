@@ -1,0 +1,32 @@
+// Run any and all other tasks. Its primary task when we want to execute build, the CI server will call this build. 
+
+plugins {
+id "com.moowork.node" version "1.2.0" 
+}
+
+node {
+// Instruct node plugin to download and install node.js and NPM (packaged with the project, does not need to be localized) 
+  download = true 
+}
+
+task build 
+
+task zip (type: Zip){
+  from ('.'){
+   include "*"
+   include "bin/**" 
+   include "data/**" 
+   include "node_modules/**" 
+   include "public/**" 
+   include "routes/**" 
+   include "views/**" 
+}
+ destinationDir(file("dist"))
+  baseName "trainSchedule" 
+}
+build.dependsOn zip
+zip.dependsOn npm_build 
+build.dependsOn npm_build 
+npm_build.dependsOn npmInstall
+npm_build.dependsOn npm_test
+npm_test.dependsOn npmInstall
